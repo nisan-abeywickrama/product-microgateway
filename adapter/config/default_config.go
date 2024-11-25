@@ -82,6 +82,7 @@ var defaultConfig = &Config{
 		ClusterTimeoutInSeconds:          20,
 		EnforcerResponseTimeoutInSeconds: 20,
 		UseRemoteAddress:                 false,
+		PreserveResponseHeaderCase:       false,
 		KeyStore: keystore{
 			KeyPath:  "/home/wso2/security/keystore/mg.key",
 			CertPath: "/home/wso2/security/keystore/mg.pem",

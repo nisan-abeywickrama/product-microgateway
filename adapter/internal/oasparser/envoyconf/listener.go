@@ -121,6 +121,19 @@ func createListeners(conf *config.Config) []*listenerv3.Listener {
 		StripMatchingHostPort: true,
 	}
 
+	if conf.Envoy.PreserveResponseHeaderCase {
+		manager.HttpProtocolOptions.HeaderKeyFormat = &corev3.Http1ProtocolOptions_HeaderKeyFormat{
+			HeaderFormat: &corev3.Http1ProtocolOptions_HeaderKeyFormat_StatefulFormatter{
+				StatefulFormatter: &corev3.TypedExtensionConfig{
+					Name: perserveCaseFormatterName,
+					TypedConfig: &anypb.Any{
+						TypeUrl: perserveCaseFormatterConfigName,
+					},
+				},
+			},
+		}
+	}
+
 	if len(accessLogs) > 0 {
 		manager.AccessLog = accessLogs
 	}

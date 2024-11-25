@@ -589,13 +589,28 @@ func processEndpoints(clusterName string, clusterDetails *model.EndpointCluster,
 	}
 	conf, _ := config.ReadConfigs()
 
+	commonHTTPProtocolOptions := &corev3.Http1ProtocolOptions{
+				EnableTrailers: config.GetWireLogConfig().LogTrailersEnabled,
+	}
+		
+	if conf.Envoy.PreserveResponseHeaderCase {
+		commonHTTPProtocolOptions.HeaderKeyFormat = &corev3.Http1ProtocolOptions_HeaderKeyFormat{
+			HeaderFormat: &corev3.Http1ProtocolOptions_HeaderKeyFormat_StatefulFormatter{
+				StatefulFormatter: &corev3.TypedExtensionConfig{
+					Name: perserveCaseFormatterName,
+					TypedConfig: &anypb.Any{
+						TypeUrl: perserveCaseFormatterConfigName,
+					},
+				},
+			},
+		}
+	}
+
 	httpProtocolOptions := &upstreams_http_v3.HttpProtocolOptions{
 		UpstreamProtocolOptions: &upstreams_http_v3.HttpProtocolOptions_ExplicitHttpConfig_{
 			ExplicitHttpConfig: &upstreams_http_v3.HttpProtocolOptions_ExplicitHttpConfig{
 				ProtocolConfig: &upstreams_http_v3.HttpProtocolOptions_ExplicitHttpConfig_HttpProtocolOptions{
-					HttpProtocolOptions: &corev3.Http1ProtocolOptions{
-						EnableTrailers: config.GetWireLogConfig().LogTrailersEnabled,
-					},
+					HttpProtocolOptions: commonHTTPProtocolOptions,
 				},
 			},
 		},

@@ -123,6 +123,7 @@ type envoy struct {
 	UseRemoteAddress                 bool
 	Filters                          filters
 	PerConnectionBufferLimitBytes    uint32
+	PreserveResponseHeaderCase       bool
 }
 
 type connectionTimeouts struct {
